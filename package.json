@@ -1,0 +1,22 @@
+{
+  "name": "vite-physics-practicum",
+  "version": "1.1.5",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "@vitejs/plugin-react": "latest",
+    "express": "^5.2.1",
+    "react": "latest",
+    "react-dom": "latest",
+    "three": "latest",
+    "vite": "latest",
+    "xlsx": "^0.18.5"
+  }
+}
