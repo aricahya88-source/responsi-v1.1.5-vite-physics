@@ -636,6 +636,62 @@ export default function App() {
     setNotice("Nilai berhasil disimpan.");
   };
 
+  const importGrades = async (rows) => {
+    const makeNimKey = (value) => String(value || "").trim().toLowerCase();
+    const makePracticumKey = (value) => String(value || "").trim().toLowerCase();
+    const byId = new Map(submissions.map((submission) => [String(submission.id || "").trim(), submission]));
+    const byNimAndPracticumId = new Map(submissions.map((submission) => [
+      `${makeNimKey(submission.student?.nim)}|${makePracticumKey(submission.practicum?.id)}`,
+      submission
+    ]));
+    const byNimAndPracticumTitle = new Map(submissions.map((submission) => [
+      `${makeNimKey(submission.student?.nim)}|${makePracticumKey(submission.practicum?.title)}`,
+      submission
+    ]));
+    const now = new Date().toISOString();
+    const updates = [];
+
+    rows.forEach((row) => {
+      const numericScore = Number(row.score);
+      if (!Number.isFinite(numericScore) || numericScore < 0 || numericScore > 100) return;
+
+      const id = String(row.submissionId || "").trim();
+      const nim = makeNimKey(row.nim);
+      const idKey = `${nim}|${makePracticumKey(row.practicumId)}`;
+      const titleKey = `${nim}|${makePracticumKey(row.practicumTitle)}`;
+      const target = (id && byId.get(id)) || byNimAndPracticumId.get(idKey) || byNimAndPracticumTitle.get(titleKey);
+      if (!target) return;
+
+      updates.push({
+        id: target.id,
+        grade: {
+          score: numericScore,
+          feedback: row.feedback || "",
+          gradedAt: now
+        }
+      });
+    });
+
+    const uniqueUpdates = [...new Map(updates.map((item) => [item.id, item])).values()];
+    if (!uniqueUpdates.length) {
+      return { imported: 0, skipped: rows.length };
+    }
+
+    setSubmissions((current) => current.map((submission) => {
+      const update = uniqueUpdates.find((item) => item.id === submission.id);
+      return update ? { ...submission, grade: update.grade } : submission;
+    }));
+
+    await Promise.allSettled(uniqueUpdates.map((item) => fetch("/api/submissions", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: item.id, score: item.grade.score, feedback: item.grade.feedback })
+    })));
+
+    setNotice(`${uniqueUpdates.length} nilai berhasil diimport.`);
+    return { imported: uniqueUpdates.length, skipped: rows.length - uniqueUpdates.length };
+  };
+
   const copyPayload = async () => {
     if (!payload) return;
     try {
@@ -690,7 +746,7 @@ export default function App() {
             onDeleteUser={deleteUser}
           />
         ) : null}
-        {activeId === "admin-grades" && session.role === "admin" ? <AdminGrades submissions={submissions} onGradeSubmission={gradeSubmission} /> : null}
+        {activeId === "admin-grades" && session.role === "admin" ? <AdminGrades submissions={submissions} onGradeSubmission={gradeSubmission} onImportGrades={importGrades} /> : null}
 
         {activePracticum ? (
           <div className="practicum-layout">
