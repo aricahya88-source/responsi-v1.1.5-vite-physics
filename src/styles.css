@@ -1168,3 +1168,94 @@ input[type="range"] {
   padding: 0.55rem 0.85rem;
   font-size: 0.85rem;
 }
+
+/* Patch menu nilai: grouping mahasiswa, buka jawaban, export/import Excel */
+.grade-tools-panel {
+  padding: 1rem;
+}
+
+.grade-action-row button {
+  flex: 1 1 210px;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.student-groups,
+.grouped-buttons {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.student-grade-group {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.035);
+  overflow: hidden;
+}
+
+.student-group-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border-radius: 0;
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  box-shadow: none;
+  text-align: left;
+}
+
+.student-group-header span {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.student-group-header small,
+.student-group-header em {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 0.78rem;
+}
+
+.grouped-buttons {
+  padding: 0.75rem;
+}
+
+.grouped-buttons button b {
+  width: max-content;
+  margin-top: 0.35rem;
+  padding: 0.28rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(110, 231, 255, 0.13);
+  color: var(--accent);
+  font-size: 0.74rem;
+}
+
+.answer-detail {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+
+.answer-detail summary {
+  cursor: pointer;
+  padding: 0.85rem;
+  font-weight: 900;
+  color: var(--text);
+}
+
+.answer-detail article {
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+}
+
+.student-answer {
+  overflow-wrap: anywhere;
+}
